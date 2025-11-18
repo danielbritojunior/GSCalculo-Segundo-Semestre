@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Solution - Análise de Cálculo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        input[type="number"] {
+            background-color: #374151; border: 1px solid #4b5563; color: #e5e7eb;
+            border-radius: 0.375rem; padding: 0.5rem 0.75rem; width: 100%;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        input[type="number"]:focus {
+            outline: none; border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
+        }
+        .result-box {
+            background-color: #1f2937; border: 1px solid #374151;
+            padding: 1rem; border-radius: 0.5rem; text-align: center;
+        }
+        .formula { font-size: 1.125rem; }
+        /* Classe para inputs menores, como os de tempo */
+        .input-small {
+            width: 5rem; /* 80px */
+            text-align: center;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-white">Dashboard de Cálculo: A Curva do Conhecimento</h1>
+            <p class="text-lg text-gray-400 mt-2">Análise de Limite, Derivada e Integral para o Global Solution</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 flex flex-col">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-1">1. Limite: Curva K(t)</h2>
+                <p class="text-gray-400 mb-4">O gráfico de K(t) mostra o seu, <strong>Nível de Conhecimento</strong> (0 a L) ao longo do tempo (t).</p>
+                <p class="font-mono text-center bg-gray-900 p-3 rounded-md mb-6 text-emerald-400 formula">
+                    K(t) = L · (1 - e<sup>-kt</sup>)
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="limitL" class="block text-sm font-medium text-gray-300 mb-1">Conhecimento Máx. (L)</label>
+                        <input id="limitL" type="number" value="100" step="10">
+                    </div>
+                    <div>
+                        <label for="limitK" class="block text-sm font-medium text-gray-300 mb-1">Taxa de Aprend. (k)</label>
+                        <input id="limitK" type="number" value="0.2" step="0.01">
+                    </div>
+                </div>
+
+                <div class="result-box mt-auto">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <label for="timeKnowledge" class="text-sm">Calcular K(t) em t =</label>
+                        <input id="timeKnowledge" type="number" value="10" class="input-small p-1">
+                    </div>
+                    <p class="text-lg">Nível de Conhecimento</p>
+                    <p id="knowledgeResultValue" class="text-3xl font-bold text-emerald-400 mt-1">0</p>
+                    <p class="text-xs text-gray-400 mt-2 p-2 bg-gray-800 rounded">
+                        Este é o seu "nível" (de 0 a L) no tempo t.
+                    </p>
+                </div>
+                <div class="chart-container mt-6">
+                    <canvas id="knowledgeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 flex flex-col">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-1">2. Derivada: Velocidade K'(t)</h2>
+                <p class="text-gray-400 mb-4">A derivada K'(t) mostra a <strong>Velocidade de Aprendizado</strong>. Note como ela é alta no início e cai para zero.</p>
+                <p class="font-mono text-center bg-gray-900 p-3 rounded-md mb-6 text-emerald-400 formula">
+                    K'(t) = (L · k) · e<sup>-kt</sup>
+                </p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="derivativeL" class="block text-sm font-medium text-gray-300 mb-1">Conhecimento Máx. (L)</label>
+                        <input id="derivativeL" type="number" value="100" step="10">
+                    </div>
+                    <div>
+                        <label for="derivativeK" class="block text-sm font-medium text-gray-300 mb-1">Taxa de Aprend. (k)</label>
+                        <input id="derivativeK" type="number" value="0.2" step="0.01">
+                    </div>
+                </div>
+
+                <div class="result-box mt-auto">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <label for="timeVelocity" class="text-sm">Calcular K'(t) em t =</label>
+                         <input id="timeVelocity" type="number" value="0" class="input-small p-1">
+                    </div>
+                    <p class="text-lg">Velocidade da Aprendizagem</p>
+                    <p id="velocityResultValue" class="text-3xl font-bold text-emerald-400 mt-1">0</p>
+                    <p class="text-xs text-gray-400 mt-2 p-2 bg-gray-800 rounded">
+                        Isto é o quão rápido você está aprendendo no tempo t.
+                    </p>
+                </div>
+                <div class="chart-container mt-6">
+                    <canvas id="velocityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 flex flex-col">
+                <h2 class="text-2xl font-bold text-indigo-400 mb-1">3. Integral: Esforço Acumulado</h2>
+                <p class="text-gray-400 mb-4">A integral calcula o <strong>"Esforço Total"</strong> (a área sombreada) acumulado entre um tempo t1 e t2.</p>
+                <p class="font-mono text-center bg-gray-900 p-3 rounded-md mb-6 text-emerald-400 formula">
+                    ∫<sub>t1</sub><sup>t2</sup> K(t) dt
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="integralL" class="block text-sm font-medium text-gray-300 mb-1">Conhecimento Máx. (L)</label>
+                        <input id="integralL" type="number" value="100" step="10">
+                    </div>
+                    <div>
+                        <label for="integralK" class="block text-sm font-medium text-gray-300 mb-1">Taxa de Aprend. (k)</label>
+                        <input id="integralK" type="number" value="0.2" step="0.01">
+                    </div>
+                </div>
+
+                <div class="result-box mt-auto">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <label for="timeIntegralT1" class="text-sm">Início (t1) =</label>
+                        <input id="timeIntegralT1" type="number" value="5" class="input-small p-1">
+                        <label for="timeIntegralT2" class="text-sm">Fim (t2) =</label>
+                        <input id="timeIntegralT2" type="number" value="20" class="input-small p-1">
+                    </div>
+                    <p class="text-lg">Esforço Acumulado (Área)</p>
+                    <p id="integralResultValue" class="text-3xl font-bold text-emerald-400 mt-1">0</p>
+                    <p class="text-xs text-gray-400 mt-2 p-2 bg-gray-800 rounded">
+                        É o "volume total" do seu esforço entre t1 e t2. (A soma do nível de cada dia).
+                    </p>
+                </div>
+                <div class="chart-container mt-6">
+                    <canvas id="integralChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Elementos de Input Globais (REMOVIDOS) ---
+            
+            // --- Configuração Padrão dos Gráficos ---
+            const chartConfig = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Tempo (t)', color: '#9ca3af' },
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Valor', color: '#9ca3af' },
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#d1d5db' } }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            };
+
+            // --- 1. Gráfico (Limite): Curva de Aprendizado K(t) ---
+            const knowledgeCtx = document.getElementById('knowledgeChart').getContext('2d');
+            const timeKnowledgeInput = document.getElementById('timeKnowledge');
+            const knowledgeResultValue = document.getElementById('knowledgeResultValue');
+            // NOVOS Inputs Locais para o Limite
+            const limitLInput = document.getElementById('limitL');
+            const limitKInput = document.getElementById('limitK');
+            
+            const knowledgeChart = new Chart(knowledgeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Nível de Conhecimento K(t)',
+                        data: [],
+                        borderColor: '#818cf8', // Cor Indigo
+                        backgroundColor: 'rgba(129, 140, 248, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...chartConfig,
+                    scales: { ...chartConfig.scales, y: { ...chartConfig.scales.y, title: { display: true, text: 'Nível K(t)', color: '#9ca3af' }}}
+                }
+            });
+
+            // --- 2. Gráfico (Derivada): Velocidade K'(t) ---
+            const velocityCtx = document.getElementById('velocityChart').getContext('2d');
+            const timeVelocityInput = document.getElementById('timeVelocity');
+            const velocityResultValue = document.getElementById('velocityResultValue');
+            // NOVOS Inputs Locais para a Derivada
+            const derivativeLInput = document.getElementById('derivativeL');
+            const derivativeKInput = document.getElementById('derivativeK');
+
+            const velocityChart = new Chart(velocityCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: "Velocidade K'(t)",
+                        data: [],
+                        borderColor: '#34d399', // Cor Emerald
+                        backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...chartConfig,
+                    scales: { ...chartConfig.scales, y: { ...chartConfig.scales.y, title: { display: true, text: "Velocidade K'(t)", color: '#9ca3af' }}}
+                }
+            });
+
+            // --- 3. Gráfico (Integral): Conhecimento Acumulado ---
+            const integralCtx = document.getElementById('integralChart').getContext('2d');
+            const timeIntegralT1Input = document.getElementById('timeIntegralT1'); 
+            const timeIntegralT2Input = document.getElementById('timeIntegralT2'); 
+            const integralResultValue = document.getElementById('integralResultValue');
+            // NOVOS Inputs Locais para a Integral
+            const integralLInput = document.getElementById('integralL');
+            const integralKInput = document.getElementById('integralK');
+
+            const integralChart = new Chart(integralCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Nível de Conhecimento K(t)', // Linha
+                            data: [],
+                            borderColor: '#f472b6', // Cor Pink
+                            tension: 0.4,
+                            fill: false
+                        },
+                        {
+                            label: 'Área Acumulada', // Sombra da Área
+                            data: [],
+                            backgroundColor: 'rgba(244, 114, 182, 0.3)',
+                            fill: 'origin',
+                            borderColor: 'transparent',
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    ...chartConfig,
+                    scales: { ...chartConfig.scales, y: { ...chartConfig.scales.y, title: { display: true, text: 'Nível K(t)', color: '#9ca3af' }}}
+                }
+            });
+
+            // --- Funções de Cálculo ---
+            const labels = Array.from({ length: 41 }, (_, i) => i); // Gera 40 pontos no tempo
+            
+            function updateKnowledgeChart() {
+                // MODIFICADO: Lê dos inputs LOCAIS (limitLInput, limitKInput)
+                const L = parseFloat(limitLInput.value) || 0;
+                const k = parseFloat(limitKInput.value) || 0;
+                const t = parseFloat(timeKnowledgeInput.value) || 0;
+
+                const result = L * (1 - Math.exp(-k * t));
+                knowledgeResultValue.textContent = result.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+                
+                const data = labels.map(time => L * (1 - Math.exp(-k * time)));
+                knowledgeChart.data.labels = labels;
+                knowledgeChart.data.datasets[0].data = data;
+                knowledgeChart.update();
+            }
+
+            function updateVelocityChart() {
+                // MODIFICADO: Lê dos inputs LOCAIS (derivativeLInput, derivativeKInput)
+                const L = parseFloat(derivativeLInput.value) || 0;
+                const k = parseFloat(derivativeKInput.value) || 0;
+                const t = parseFloat(timeVelocityInput.value) || 0;
+                
+                const result = (L * k) * Math.exp(-k * t);
+                velocityResultValue.textContent = result.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+
+                const data = labels.map(time => (L * k) * Math.exp(-k * time));
+                velocityChart.data.labels = labels;
+                velocityChart.data.datasets[0].data = data;
+                velocityChart.update();
+            }
+            
+            function updateIntegralChart() {
+                // MODIFICADO: Lê dos inputs LOCAIS (integralLInput, integralKInput)
+                const L = parseFloat(integralLInput.value) || 0;
+                const k = parseFloat(integralKInput.value) || 0;
+                let t1 = parseFloat(timeIntegralT1Input.value) || 0;
+                let t2 = parseFloat(timeIntegralT2Input.value) || 0;
+
+                if (t1 > t2) [t1, t2] = [t2, t1];
+                
+                // Adicionado um 'guarda' para evitar divisão por zero se k=0
+                if (k === 0) {
+                    // Se k=0, a integral de K(t) = L*(1-e^0) = 0. A área é 0.
+                    integralResultValue.textContent = '0.00';
+                    const lineData = labels.map(time => 0);
+                    integralChart.data.labels = labels;
+                    integralChart.data.datasets[0].data = lineData;
+                    integralChart.data.datasets[1].data = lineData; // Sombra também é 0
+                    integralChart.update();
+                    return; // Sai da função
+                }
+
+                // Antiderivada: I(t) = Lt + (L/k)e⁻ᵏᵗ
+                const integralFunc = (t) => (L * t) + (L / k) * Math.exp(-k * t);
+                
+                // Integral Definida: I(t2) - I(t1)
+                const result = integralFunc(t2) - integralFunc(t1);
+                integralResultValue.textContent = result.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+
+                // Gera os dados para o gráfico
+                const lineData = labels.map(time => L * (1 - Math.exp(-k * time)));
+                const areaData = labels.map(time => (time >= t1 && time <= t2) ? L * (1 - Math.exp(-k * time)) : null);
+                
+                integralChart.data.labels = labels;
+                integralChart.data.datasets[0].data = lineData; // Linha
+                integralChart.data.datasets[1].data = areaData; // Sombra
+                integralChart.update();
+            }
+            
+            // --- Função Mestre (REMOVIDA) ---
+            // function updateAllCharts() { ... } (Não é mais necessária)
+
+            // --- Event Listeners (MODIFICADOS) ---
+            
+            // Inputs globais (REMOVIDOS)
+            // globalLInput.addEventListener('input', updateAllCharts);
+            // globalKInput.addEventListener('input', updateAllCharts);
+
+            // Inputs locais atualizam SÓ O SEU CÁLCULO E GRÁFICO
+            
+            // Card 1: Limite
+            timeKnowledgeInput.addEventListener('input', updateKnowledgeChart);
+            limitLInput.addEventListener('input', updateKnowledgeChart); // NOVO
+            limitKInput.addEventListener('input', updateKnowledgeChart); // NOVO
+
+            // Card 2: Derivada
+            timeVelocityInput.addEventListener('input', updateVelocityChart);
+            derivativeLInput.addEventListener('input', updateVelocityChart); // NOVO
+            derivativeKInput.addEventListener('input', updateVelocityChart); // NOVO
+
+            // Card 3: Integral
+            timeIntegralT1Input.addEventListener('input', updateIntegralChart); 
+            timeIntegralT2Input.addEventListener('input', updateIntegralChart); 
+            integralLInput.addEventListener('input', updateIntegralChart); // NOVO
+            integralKInput.addEventListener('input', updateIntegralChart); // NOVO
+
+            // --- Chamada Inicial (MODIFICADA) ---
+            // Substituímos updateAllCharts() por chamadas individuais
+            updateKnowledgeChart();
+            updateVelocityChart();
+            updateIntegralChart();
+        });
+    </script>
+</body>
+</html>
